@@ -54,7 +54,7 @@ public class MunicipalityService : IMunicipalityService
         return municipalities.Skip(from).Take(num).Select(m => new MunicipalityDTO(m)).ToList();
     }
     
-    private void Save()
+    public void Save()
     {
         _context.SaveChanges();
     }

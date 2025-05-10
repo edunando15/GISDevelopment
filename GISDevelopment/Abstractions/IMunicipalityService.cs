@@ -42,8 +42,8 @@ public interface IMunicipalityService
     /// satisfying the search criteria.
     /// </summary>
     /// <param name="from"> Indicates the starting point of the result. </param>
-    /// <param name="num"> Indicated the number of elements in the result. </param>
+    /// <param name="num"> Indicates the number of elements in the result. </param>
     /// <param name="totalCount"> Denotes the total count of Municipalities. </param>
-    /// <returns></returns>
+    /// <returns> A List containing all the Municipalities satisfying the given criteria. </returns>
     List<MunicipalityDTO> GetAllMunicipalities(int from, int num, out int totalCount);
 }

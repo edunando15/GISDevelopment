@@ -1,0 +1,38 @@
+@using GISDevelopment.Models.DTOs
+@model IEnumerable<GISDevelopment.Models.DTOs.RestaurantDTO>
+
+@{
+    ViewData["Title"] = "Restaurants";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@latest/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
+    <script src="js/openLayersFunctions.js"></script>
+</head>
+
+<body>
+<table width="100%">
+    <tr>
+        <td width="20%">
+            <h2> Restaurants </h2>
+            @foreach (RestaurantDTO dto in Model)
+            {
+                <p> <a href='#'> @dto.Name </a> </p>
+            }
+        </td>
+    </tr>
+</table>
+</body>
+
+<script>
+    var map; // Global variable for the map    
+    initMap();
+</script>
+
+</html>
