@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Users\\Eduardo\\source\\repos\\GISDevelopment\\GISDevelopment\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\GISDevelopment.bundle.scp.css",
-      "PackagePath": "staticwebassets\\GISDevelopment.bi0u3yoqa5.bundle.scp.css"
+      "PackagePath": "staticwebassets\\GISDevelopment.bundle.scp.css"
     },
     {
       "Id": "C:\\Users\\Eduardo\\source\\repos\\GISDevelopment\\GISDevelopment\\wwwroot\\css\\site.css",
@@ -243,10 +243,6 @@
     {
       "Id": "C:\\Users\\Eduardo\\source\\repos\\GISDevelopment\\GISDevelopment\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
-    },
-    {
-      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.GISDevelopment.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
-      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.GISDevelopment.Microsoft.AspNetCore.StaticWebAssets.props",

@@ -10,7 +10,6 @@ C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\EFC
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\appsettings.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\GISDevelopment.staticwebassets.runtime.json
-C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\GISDevelopment.staticwebassets.endpoints.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\GISDevelopment.exe
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\GISDevelopment.deps.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\bin\Debug\net8.0\GISDevelopment.runtimeconfig.json
@@ -130,9 +129,7 @@ C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\sco
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\scopedcss\projectbundle\GISDevelopment.bundle.scp.css
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets\msbuild.GISDevelopment.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets\msbuild.GISDevelopment.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets\msbuild.build.GISDevelopment.props
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.GISDevelopment.props
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.GISDevelopment.props
@@ -143,3 +140,4 @@ C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\ref
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\GISDevelopment.pdb
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\GISDevelopment.genruntimeconfig.cache
 C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\ref\GISDevelopment.dll
+C:\Users\Eduardo\source\repos\GISDevelopment\GISDevelopment\obj\Debug\net8.0\GISDevelopment.sourcelink.json
