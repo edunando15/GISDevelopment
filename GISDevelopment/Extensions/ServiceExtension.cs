@@ -26,7 +26,7 @@ public static class ServiceExtension
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IMunicipalityService, MunicipalityService>();
+        services.AddScoped<IGenericService<Municipality, MunicipalityDTO>, MunicipalityService>();
         services.AddScoped<IGenericService<Restaurant, RestaurantDTO>, RestaurantService>();
         return services;
     }

@@ -1,5 +1,6 @@
 ﻿using GISDevelopment.Abstractions;
 using GISDevelopment.Data;
+using GISDevelopment.Models;
 using GISDevelopment.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,19 +8,18 @@ namespace GISDevelopment.Controllers;
 
 public class MunicipalityController : Controller
 {
+    private readonly IGenericService<Municipality, MunicipalityDTO> _service;
     private readonly DatabaseContext _context;
     
-    private readonly IMunicipalityService _municipalityService;
-    
-    public MunicipalityController(DatabaseContext context, IMunicipalityService municipalityService)
+    public MunicipalityController(IGenericService<Municipality, MunicipalityDTO> service, DatabaseContext context)
     {
         _context = context;
-        _municipalityService = municipalityService;
+        _service = service;
     }
-
+    
     public IActionResult Index()
     {
-        List<MunicipalityDTO> municipalities = _municipalityService.GetAllMunicipalities();
+        var municipalities = _service.GetAll();
         return View("Municipalities", municipalities);
     }
 }
