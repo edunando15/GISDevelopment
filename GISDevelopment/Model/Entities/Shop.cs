@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
 public partial class Shop
 {
+    [Key]
     public long? OsmId { get; set; }
 
     public string? Access { get; set; }

@@ -5,10 +5,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GISDevelopment.Migrations.ItalyCentre
+namespace GISDevelopment.Migrations
 {
     /// <inheritdoc />
-    public partial class FormattedTables : Migration
+    public partial class FirstNewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,7 +60,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 name: "Monument",
                 columns: table => new
                 {
-                    osm_id = table.Column<long>(type: "bigint", nullable: true),
+                    osm_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     access = table.Column<string>(type: "text", nullable: true),
                     addrhousename = table.Column<string>(name: "addr:housename", type: "text", nullable: true),
                     addrhousenumber = table.Column<string>(name: "addr:housenumber", type: "text", nullable: true),
@@ -133,6 +134,7 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Monument", x => x.osm_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,7 +153,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 name: "PlaceOfWorship",
                 columns: table => new
                 {
-                    osm_id = table.Column<long>(type: "bigint", nullable: true),
+                    osm_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     access = table.Column<string>(type: "text", nullable: true),
                     addrhousename = table.Column<string>(name: "addr:housename", type: "text", nullable: true),
                     addrhousenumber = table.Column<string>(name: "addr:housenumber", type: "text", nullable: true),
@@ -224,6 +227,7 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_PlaceOfWorship", x => x.osm_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -586,7 +590,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 name: "Restaurant",
                 columns: table => new
                 {
-                    osm_id = table.Column<long>(type: "bigint", nullable: true),
+                    osm_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     access = table.Column<string>(type: "text", nullable: true),
                     addrhousename = table.Column<string>(name: "addr:housename", type: "text", nullable: true),
                     addrhousenumber = table.Column<string>(name: "addr:housenumber", type: "text", nullable: true),
@@ -659,13 +664,15 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Restaurant", x => x.osm_id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Shop",
                 columns: table => new
                 {
-                    osm_id = table.Column<long>(type: "bigint", nullable: true),
+                    osm_id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     access = table.Column<string>(type: "text", nullable: true),
                     addrhousename = table.Column<string>(name: "addr:housename", type: "text", nullable: true),
                     addrhousenumber = table.Column<string>(name: "addr:housenumber", type: "text", nullable: true),
@@ -738,6 +745,7 @@ namespace GISDevelopment.Migrations.ItalyCentre
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_Shop", x => x.osm_id);
                 });
 
             migrationBuilder.CreateIndex(

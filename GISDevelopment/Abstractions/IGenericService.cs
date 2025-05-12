@@ -39,7 +39,7 @@ public abstract class IGenericService<T, D> where T: class where D : IGenericDTO
     /// </summary>
     /// <param name="id"> The id of the entity to delete. </param>
     /// <returns> True if the entity has been removed, false otherwise. </returns>
-    public bool Delete(int id)
+    public bool Delete(long id)
     {
         var entity = _context.Set<T>().Find(id);
         if (entity == null) return false;
@@ -53,7 +53,7 @@ public abstract class IGenericService<T, D> where T: class where D : IGenericDTO
     /// </summary>
     /// <param name="id"> The id of the entity to retrieve. </param>
     /// <returns> The requested entity if it exists, false otherwise. </returns>
-    public D Get(int id)
+    public D Get(long id)
     {
         var entity = _context.Set<T>().Find(id);
         return entity == null ? default : D.FromEntity(entity);

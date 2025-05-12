@@ -1,5 +1,4 @@
-﻿// Function used to initialise the map.
-function initMap() {
+﻿function initMap(center) {
     map = new ol.Map({
         target: 'map',
         layers: [
@@ -8,15 +7,15 @@ function initMap() {
             })
         ],
         view: new ol.View({
-            center: ol.proj.fromLonLat([19.818698, 41.327546]),
+            center: ol.proj.fromLonLat(center),
             zoom: 7
         })
     });
 }
 
 // Function used to load the polygon of a municipality.
-async function loadPolygon(id) {
-    const response = await fetch('../../API/Municipality/' + id);
+async function loadPolygon(element, id) {
+    const response = await fetch(element + id);
     if(!response.ok) {
         console.error("Failed to load polygon with id " + id + ".");
         return;

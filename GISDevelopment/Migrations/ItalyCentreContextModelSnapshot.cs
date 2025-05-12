@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GISDevelopment.Migrations.ItalyCentre
+namespace GISDevelopment.Migrations
 {
     [DbContext(typeof(ItalyCentreContext))]
     partial class ItalyCentreContextModelSnapshot : ModelSnapshot
@@ -130,6 +130,13 @@ namespace GISDevelopment.Migrations.ItalyCentre
 
             modelBuilder.Entity("GISDevelopment.Models.Monument", b =>
                 {
+                    b.Property<long>("OsmId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("osm_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OsmId"));
+
                     b.Property<string>("Access")
                         .HasColumnType("text")
                         .HasColumnName("access");
@@ -306,10 +313,6 @@ namespace GISDevelopment.Migrations.ItalyCentre
                         .HasColumnType("text")
                         .HasColumnName("operator");
 
-                    b.Property<long?>("OsmId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("osm_id");
-
                     b.Property<string>("Place")
                         .HasColumnType("text")
                         .HasColumnName("place");
@@ -409,6 +412,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                     b.Property<int?>("ZOrder")
                         .HasColumnType("integer")
                         .HasColumnName("z_order");
+
+                    b.HasKey("OsmId");
 
                     b.ToTable("Monument", (string)null);
                 });
@@ -432,6 +437,13 @@ namespace GISDevelopment.Migrations.ItalyCentre
 
             modelBuilder.Entity("GISDevelopment.Models.PlaceOfWorship", b =>
                 {
+                    b.Property<long>("OsmId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("osm_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OsmId"));
+
                     b.Property<string>("Access")
                         .HasColumnType("text")
                         .HasColumnName("access");
@@ -608,10 +620,6 @@ namespace GISDevelopment.Migrations.ItalyCentre
                         .HasColumnType("text")
                         .HasColumnName("operator");
 
-                    b.Property<long?>("OsmId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("osm_id");
-
                     b.Property<string>("Place")
                         .HasColumnType("text")
                         .HasColumnName("place");
@@ -711,6 +719,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                     b.Property<int?>("ZOrder")
                         .HasColumnType("integer")
                         .HasColumnName("z_order");
+
+                    b.HasKey("OsmId");
 
                     b.ToTable("PlaceOfWorship", (string)null);
                 });
@@ -1947,6 +1957,13 @@ namespace GISDevelopment.Migrations.ItalyCentre
 
             modelBuilder.Entity("GISDevelopment.Models.Restaurant", b =>
                 {
+                    b.Property<long>("OsmId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("osm_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OsmId"));
+
                     b.Property<string>("Access")
                         .HasColumnType("text")
                         .HasColumnName("access");
@@ -2122,10 +2139,6 @@ namespace GISDevelopment.Migrations.ItalyCentre
                     b.Property<string>("Operator")
                         .HasColumnType("text")
                         .HasColumnName("operator");
-
-                    b.Property<long?>("OsmId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("osm_id");
 
                     b.Property<string>("Place")
                         .HasColumnType("text")
@@ -2227,11 +2240,20 @@ namespace GISDevelopment.Migrations.ItalyCentre
                         .HasColumnType("integer")
                         .HasColumnName("z_order");
 
+                    b.HasKey("OsmId");
+
                     b.ToTable("Restaurant", (string)null);
                 });
 
             modelBuilder.Entity("GISDevelopment.Models.Shop", b =>
                 {
+                    b.Property<long>("OsmId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("osm_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("OsmId"));
+
                     b.Property<string>("Access")
                         .HasColumnType("text")
                         .HasColumnName("access");
@@ -2408,10 +2430,6 @@ namespace GISDevelopment.Migrations.ItalyCentre
                         .HasColumnType("text")
                         .HasColumnName("operator");
 
-                    b.Property<long?>("OsmId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("osm_id");
-
                     b.Property<string>("Place")
                         .HasColumnType("text")
                         .HasColumnName("place");
@@ -2511,6 +2529,8 @@ namespace GISDevelopment.Migrations.ItalyCentre
                     b.Property<int?>("ZOrder")
                         .HasColumnType("integer")
                         .HasColumnName("z_order");
+
+                    b.HasKey("OsmId");
 
                     b.ToTable("Shop", (string)null);
                 });

@@ -1,9 +1,11 @@
-﻿using NetTopologySuite.Geometries;
+﻿using System.ComponentModel.DataAnnotations;
+using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
 public partial class Restaurant
 {
+    [Key]
     public long? OsmId { get; set; }
 
     public string? Access { get; set; }

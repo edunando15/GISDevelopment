@@ -103,9 +103,8 @@ public partial class ItalyCentreContext : DbContext
         modelBuilder.Entity<Monument>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("Monument");
-
+            entity.HasKey(e => e.OsmId);
             entity.Property(e => e.Access).HasColumnName("access");
             entity.Property(e => e.AddrHousename).HasColumnName("addr:housename");
             entity.Property(e => e.AddrHousenumber).HasColumnName("addr:housenumber");
@@ -193,9 +192,8 @@ public partial class ItalyCentreContext : DbContext
         modelBuilder.Entity<PlaceOfWorship>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("PlaceOfWorship");
-
+            entity.HasKey(e => e.OsmId);
             entity.Property(e => e.Access).HasColumnName("access");
             entity.Property(e => e.AddrHousename).HasColumnName("addr:housename");
             entity.Property(e => e.AddrHousenumber).HasColumnName("addr:housenumber");
@@ -657,9 +655,8 @@ public partial class ItalyCentreContext : DbContext
         modelBuilder.Entity<Restaurant>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("Restaurant");
-
+            entity.HasKey(e => e.OsmId);
             entity.Property(e => e.Access).HasColumnName("access");
             entity.Property(e => e.AddrHousename).HasColumnName("addr:housename");
             entity.Property(e => e.AddrHousenumber).HasColumnName("addr:housenumber");
@@ -737,9 +734,8 @@ public partial class ItalyCentreContext : DbContext
         modelBuilder.Entity<Shop>(entity =>
         {
             entity
-                .HasNoKey()
                 .ToTable("Shop");
-
+            entity.HasKey(e => e.OsmId);
             entity.Property(e => e.Access).HasColumnName("access");
             entity.Property(e => e.AddrHousename).HasColumnName("addr:housename");
             entity.Property(e => e.AddrHousenumber).HasColumnName("addr:housenumber");

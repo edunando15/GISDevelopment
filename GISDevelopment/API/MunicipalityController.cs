@@ -8,22 +8,7 @@ namespace GISDevelopment.APIControllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MunicipalityController : ControllerBase
+public class MunicipalityController: IGenericAPIController<Municipality, MunicipalityDTO>
 {
-    private readonly IGenericService<Municipality, MunicipalityDTO> _service;
-    
-    public MunicipalityController(IGenericService<Municipality, MunicipalityDTO> service)
-    {
-        _service = service;
-    }
-
-    [HttpGet("{id}")]
-    public IActionResult Index(int id)
-    {
-        var dto = _service.Get(id);
-        var wktWriter = new WKTWriter();
-        string wkt = string.Empty;
-        if(dto != null) wkt = wktWriter.Write(dto.Geometry);
-        return Ok(wkt);
-    }
+    public MunicipalityController(IGenericService<Municipality, MunicipalityDTO> service) : base(service) { }
 }
