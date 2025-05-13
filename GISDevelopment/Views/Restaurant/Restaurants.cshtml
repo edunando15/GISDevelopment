@@ -24,7 +24,7 @@
             <h2> Restaurants </h2>
             @foreach (RestaurantDTO dto in Model)
             {
-                <p> <a href='#' onclick="loadPolygon(entityTypes.ItalianRestaurant, @dto.Id)"> @dto.Name </a> </p>
+                <p> <a href='#' onclick="loadPoint(entityTypes.ItalianRestaurant, @dto.Id)"> @dto.Name </a> </p>
             }
         </td>
         <td valign="top">
@@ -37,7 +37,7 @@
 
 <script>
     var map; // Global variable for the map    
-    initMap(centralItaly);
+    initialiseMap(centralItaly);
 </script>
 
 </html>
