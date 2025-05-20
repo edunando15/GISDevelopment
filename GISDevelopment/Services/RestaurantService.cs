@@ -6,8 +6,5 @@ namespace GISDevelopment.Services;
 
 public class RestaurantService: IGenericService<Restaurant, RestaurantDTO>
 {
-    public RestaurantService(ItalyCentreContext context) : base(context)
-    {
-    }
-    
+    public RestaurantService(ItalyCentreContext context) : base(context) { }
 }

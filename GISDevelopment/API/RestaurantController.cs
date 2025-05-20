@@ -4,7 +4,7 @@ using GISDevelopment.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.IO;
 
-namespace GISDevelopment.APIControllers;
+namespace GISDevelopment.API;
 
 [ApiController]
 [Route("api/[controller]")]

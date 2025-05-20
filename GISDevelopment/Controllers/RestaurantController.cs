@@ -2,23 +2,18 @@ using GISDevelopment.Abstractions;
 using GISDevelopment.Models;
 using GISDevelopment.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GISDevelopment.Controllers;
 
-public class RestaurantController : Controller
+public class RestaurantController : IGenericController<Restaurant, RestaurantDTO>
 {
-    private readonly IGenericService<Restaurant, RestaurantDTO> _service;
-    private readonly ItalyCentreContext _context;
     
-    public RestaurantController(IGenericService<Restaurant, RestaurantDTO> service, ItalyCentreContext context)
-    {
-        _context = context;
-        _service = service;
-    }
+    public RestaurantController(IGenericService<Restaurant, RestaurantDTO> service, ItalyCentreContext context): base(service, context) { }
     
-    public IActionResult Index()
+    public override IActionResult Index()
     {
-        var restaurants = _service.GetAll();
+        var restaurants = _service.GetAll().OrderBy(r => r.Name);
         return View("Restaurants", restaurants);
     }
 }

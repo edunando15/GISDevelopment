@@ -8,10 +8,5 @@ namespace GISDevelopment.Services;
 
 public class MunicipalityService : IGenericService<Municipality, MunicipalityDTO>
 {
-    private readonly DatabaseContext _context;
-    
-    public MunicipalityService(DatabaseContext context) : base(context)
-    {
-        _context = context;
-    }
+    public MunicipalityService(DbContext context) : base(context) { }
 }

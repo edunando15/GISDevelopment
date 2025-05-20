@@ -1,10 +1,15 @@
+using GISDevelopment.Abstractions;
 using GISDevelopment.Extensions;
+using GISDevelopment.Models;
+using GISDevelopment.Models.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddModelServices(builder.Configuration);
 builder.Services.AddServices();
+builder.Services.AddMvcControllers();
+builder.Services.AddAPIControllers();
 
 var app = builder.Build();
 

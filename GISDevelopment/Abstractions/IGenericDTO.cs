@@ -28,6 +28,15 @@ public interface IGenericDTO<T, TDTO>
         get;
         set;
     }
+    
+    /// <summary>
+    /// Virtual property representing the name of the entity.
+    /// </summary>
+    string? Name
+    {
+        get;
+        set;
+    }
     T ToEntity();
     
     static abstract TDTO FromEntity(T entity);

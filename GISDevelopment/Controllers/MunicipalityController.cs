@@ -3,23 +3,18 @@ using GISDevelopment.Data;
 using GISDevelopment.Models;
 using GISDevelopment.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GISDevelopment.Controllers;
 
-public class MunicipalityController : Controller
+public class MunicipalityController : IGenericController<Municipality, MunicipalityDTO>
 {
-    private readonly IGenericService<Municipality, MunicipalityDTO> _service;
-    private readonly DatabaseContext _context;
     
-    public MunicipalityController(IGenericService<Municipality, MunicipalityDTO> service, DatabaseContext context)
-    {
-        _context = context;
-        _service = service;
-    }
+    public MunicipalityController(IGenericService<Municipality, MunicipalityDTO> service, DatabaseContext context) : base(service, context) { }
     
-    public IActionResult Index()
+    public override IActionResult Index()
     {
-        var municipalities = _service.GetAll();
+        var municipalities = _service.GetAll().OrderBy(m => m.Name);
         return View("Municipalities", municipalities);
     }
 }

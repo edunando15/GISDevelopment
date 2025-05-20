@@ -5,6 +5,14 @@ const albania = [19.818698, 41.327546];
 const centralItaly = [12.5, 42.5];
 // Function used to initialise the map.
 
-// 
-const entityTypes = {"ItalianMunicipality": 1, "ItalianRestaurant": '../../API/Restaurant/',
-    "ItalianPlaceOfWorship": 3, "ItalianMonument": 4, "ItalianShop": 5, "AlbanianMunicipality": '../../API/Municipality/'};
+//
+
+const constantPath = '/api/'
+
+const entityTypes = {
+    ItalianRestaurant: constantPath + 'Restaurant/',
+    ItalianPlaceOfWorship: constantPath + 'PlaceOfWorship/',
+    ItalianMonument: constantPath + 'Monument/',
+    ItalianShop: constantPath + 'Shop/',
+    AlbanianMunicipality: constantPath + 'Municipality/'
+};

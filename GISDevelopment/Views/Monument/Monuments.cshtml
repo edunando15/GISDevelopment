@@ -1,8 +1,8 @@
 @using GISDevelopment.Models.DTOs
-@model IEnumerable<GISDevelopment.Models.DTOs.RestaurantDTO>
+@model IEnumerable<GISDevelopment.Models.DTOs.MonumentDTO>
 
 @{
-    ViewData["Title"] = "Restaurants";
+    ViewData["Title"] = "Monuments";
 }
 
 <!DOCTYPE html>
@@ -21,14 +21,14 @@
 <table width="100%">
     <tr>
         <td width="20%">
-            <h2> Restaurants </h2>
-            @foreach (RestaurantDTO dto in Model)
+            <h2> Monuments </h2>
+            @foreach (MonumentDTO dto in Model)
             {
-                <p> <a href='#' onclick="loadPoint(entityTypes.ItalianRestaurant, @dto.Id)"> @dto.Name </a> </p>
+                <p> <a href='#' onclick="loadPoint(entityTypes.ItalianMonument, @dto.Id)"> @dto.Name </a> </p>
             }
         </td>
         <td valign="top">
-            <h2> Restaurants in the Map </h2>
+            <h2> Monuments in the Map </h2>
             <div id="map" style="width: 100%; height: 1000px; float: right;"> </div>
         </td>
     </tr>

@@ -26,7 +26,7 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
     /// <param name="id"> The id of the entity. </param>
     /// <returns> The string representation of the Geometry. </returns>
     [HttpGet("{id}")]
-    public IActionResult Index(long id)
+    public virtual IActionResult Index(long id)
     {
         var dto = _service.Get(id);
         var wktWriter = new WKTWriter();
