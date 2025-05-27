@@ -1,13 +1,15 @@
-﻿function initialiseMap(center) {
-    map = new ol.Map({
+﻿const { Map, View, proj, format, layer, source, style, interaction } = ol;
+
+function initialiseMap(center) {
+    map = new Map({
         target: 'map',
         layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
+            new layer.Tile({
+                source: new source.OSM()
             })
         ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat(center),
+        view: new View({
+            center: proj.fromLonLat(center),
             zoom: 7
         })
     });
@@ -16,27 +18,27 @@
 // Function used to load a polygon, given the API controller to call and the id of the polygon.
 async function loadPolygon(controller, id) {
     const response = await fetch(controller + id);
-    if(!response.ok) {
+    if (!response.ok) {
         console.error("Failed to load polygon with id " + id + ".");
         return;
     }
     const wkt = await response.text();
     console.log(wkt);
-    var format = new ol.format.WKT();
-    var feature = format.readFeature(wkt, {
+    const wktFormat = new format.WKT();
+    const feature = wktFormat.readFeature(wkt, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
     });
-    var vectorLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({
+    const vectorLayer = new layer.Vector({
+        source: new source.Vector({
             features: [feature]
         }),
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
+        style: new style.Style({
+            stroke: new style.Stroke({
                 color: 'blue',
                 width: 2
             }),
-            fill: new ol.style.Fill({
+            fill: new style.Fill({
                 color: 'rgba(0, 0, 255, 0.3)'
             })
         })
@@ -45,34 +47,31 @@ async function loadPolygon(controller, id) {
 }
 
 // Function used to load a point, given the API controller to call and the id of the point.
-async function loadPoint(controller, id){
-    response = await fetch(controller + id);
-    if(!response.ok) {
+async function loadPoint(controller, id) {
+    const response = await fetch(controller + id);
+    if (!response.ok) {
         console.error("Failed to load point with id " + id + ".");
         return;
     }
-    wkt = await response.text();
+    const wkt = await response.text();
     console.log(wkt);
-    var format = new ol.format.WKT();
-    var feature = format.readFeature(wkt, {
+    const wktFormat = new format.WKT();
+    const feature = wktFormat.readFeature(wkt, {
         dataProjection: 'EPSG:3857',
         featureProjection: 'EPSG:3857'
     });
-    var vectorSource = new ol.source.Vector({
+    const vectorSource = new source.Vector({
         features: [feature]
     });
-    var vectorLayer = new ol.layer.Vector({
+    const vectorLayer = new layer.Vector({
         source: vectorSource,
-        style: new ol.style.Style({
-            image: new ol.style.Circle({
+        style: new style.Style({
+            image: new style.Circle({
                 radius: 2,
-                fill: new ol.style.Fill({
-                    color: 'rgba(0, 0, 255, 0.3)'
-                }),
-                fill: new ol.style.Fill({
+                fill: new style.Fill({
                     color: 'blue'
                 }),
-                stroke: new ol.style.Stroke({
+                stroke: new style.Stroke({
                     color: 'blue',
                     width: 2
                 })
@@ -83,5 +82,5 @@ async function loadPoint(controller, id){
     // Zoom to the point.
     const geometry = feature.getGeometry();
     console.log('Geometry: ', geometry);
-    map.getView().fit(geometry, {padding: [50, 50, 50, 50], maxZoom: 8});
+    map.getView().fit(geometry, { padding: [50, 50, 50, 50], maxZoom: 8 });
 }
