@@ -1,7 +1,5 @@
-using GISDevelopment.Abstractions;
 using GISDevelopment.Extensions;
-using GISDevelopment.Models;
-using GISDevelopment.Models.DTOs;
+using NetTopologySuite.IO.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -10,6 +8,11 @@ builder.Services.AddModelServices(builder.Configuration);
 builder.Services.AddServices();
 builder.Services.AddMvcControllers();
 builder.Services.AddAPIControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new GeometryConverter());
+    });
 
 var app = builder.Build();
 

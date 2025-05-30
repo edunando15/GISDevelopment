@@ -34,4 +34,28 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
         if(dto != null) wkt = wktWriter.Write(dto.Geometry);
         return Ok(wkt);
     }
+    
+    /// <summary>
+    /// Method used to add a DTO to the database.
+    /// </summary>
+    /// <param name="dto"> DTO representing the entity. </param>
+    /// <returns> Created if the entity was added, Bad Request otherwise. </returns>
+    [HttpPost("Add")]
+    public virtual IActionResult Add([FromBody] D dto)
+    {
+        if (dto == null)
+        {
+            return BadRequest("DTO cannot be null.");
+        }
+
+        try
+        {
+            _service.Add(dto);
+            return Ok();
+        }catch (Exception ex)
+        {
+            // log ex.Message, ex.StackTrace if needed
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
 }

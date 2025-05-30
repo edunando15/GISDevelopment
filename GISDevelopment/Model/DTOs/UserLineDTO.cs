@@ -3,30 +3,26 @@ using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models.DTOs;
 
-public class UserLineDTO: IGenericDTO<UserLineDTO, UserLineDTO>
+public class UserLineDTO: IGenericDTO<UserLine, UserLineDTO>
 {
     public Geometry Geometry { get; set; }
     public long? Id { get; set; }
     public string? Name { get; set; }
-    public string? Description { get; set; }
-    public UserLineDTO ToEntity()
+    public UserLine ToEntity()
     {
-        return new UserLineDTO()
+        return new UserLine()
         {
             Id = Id,
             Name = Name,
-            Description = Description,
             Geometry = Geometry
         };
     }
-
-    public static UserLineDTO FromEntity(UserLineDTO entity)
+    public static UserLineDTO FromEntity(UserLine entity)
     {
         return new UserLineDTO()
         {
             Id = entity.Id,
             Name = entity.Name,
-            Description = entity.Description,
             Geometry = entity.Geometry
         };
     }

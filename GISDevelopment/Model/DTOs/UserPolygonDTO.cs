@@ -8,15 +8,13 @@ public class UserPolygonDTO: IGenericDTO<UserPolygon, UserPolygonDTO>
     public Geometry Geometry { get; set; }
     public long? Id { get; set; }
     public string? Name { get; set; }
-    public string? Description { get; set; }
     public UserPolygon ToEntity()
     {
         return new UserPolygon
         {
             Geometry = Geometry,
             Id = Id,
-            Name = Name,
-            Description = Description
+            Name = Name
         };
     }
 
@@ -26,8 +24,7 @@ public class UserPolygonDTO: IGenericDTO<UserPolygon, UserPolygonDTO>
         {
             Geometry = entity.Geometry,
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description
+            Name = entity.Name
         };
     }
 }

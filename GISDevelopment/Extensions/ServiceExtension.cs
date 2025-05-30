@@ -42,6 +42,15 @@ public static class ServiceExtension
         services.AddScoped<IGenericService<PlaceOfWorship, PlaceOfWorshipDTO>>(provider =>
             new PlaceOfWorshipService(provider.GetRequiredService<ItalyCentreContext>()));
         
+        services.AddScoped<IGenericService<UserPoint, UserPointDTO>>(provider =>
+            new UserPointService(provider.GetRequiredService<ItalyCentreContext>()));
+        
+        services.AddScoped<IGenericService<UserLine, UserLineDTO>>(provider =>
+            new UserLineService(provider.GetRequiredService<ItalyCentreContext>()));
+        
+        services.AddScoped<IGenericService<UserPolygon, UserPolygonDTO>>(provider =>
+            new UserPolygonService(provider.GetRequiredService<ItalyCentreContext>()));
+        
         return services;
     }
     
@@ -95,6 +104,15 @@ public static class ServiceExtension
         
         services.AddScoped<PlaceOfWorshipController>(provider =>
             new PlaceOfWorshipController(provider.GetRequiredService<IGenericService<PlaceOfWorship, PlaceOfWorshipDTO>>()));
+        
+        services.AddScoped<UserPointController>(provider =>
+            new UserPointController(provider.GetRequiredService<IGenericService<UserPoint, UserPointDTO>>()));
+        
+        services.AddScoped<UserLineController>(provider =>
+            new UserLineController(provider.GetRequiredService<IGenericService<UserLine, UserLineDTO>>()));
+        
+        services.AddScoped<UserPolygonController>(provider =>
+            new UserPolygonController(provider.GetRequiredService<IGenericService<UserPolygon, UserPolygonDTO>>()));
         
         return services;
     }

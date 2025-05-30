@@ -1,5 +1,6 @@
 ﻿const { Map, View, proj, format, layer, source, style, interaction } = ol;
 
+// Function used to initialise the map with a given center point.
 function initialiseMap(center) {
     map = new Map({
         target: 'map',
@@ -23,7 +24,6 @@ async function loadPolygon(controller, id) {
         return;
     }
     const wkt = await response.text();
-    console.log(wkt);
     const wktFormat = new format.WKT();
     const feature = wktFormat.readFeature(wkt, {
         dataProjection: 'EPSG:4326',
@@ -54,7 +54,6 @@ async function loadPoint(controller, id) {
         return;
     }
     const wkt = await response.text();
-    console.log(wkt);
     const wktFormat = new format.WKT();
     const feature = wktFormat.readFeature(wkt, {
         dataProjection: 'EPSG:3857',
@@ -81,6 +80,5 @@ async function loadPoint(controller, id) {
     map.addLayer(vectorLayer);
     // Zoom to the point.
     const geometry = feature.getGeometry();
-    console.log('Geometry: ', geometry);
     map.getView().fit(geometry, { padding: [50, 50, 50, 50], maxZoom: 8 });
 }
