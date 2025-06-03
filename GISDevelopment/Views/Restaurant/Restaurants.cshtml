@@ -45,13 +45,19 @@
         </td>
     </tr>
 </table>
+<div id="popupForm" style="display: none; background: white; padding: 10px; position: absolute; z-index: 1000; border: 1px solid #ccc;">
+    <h3>Save Feature</h3>
+    <input type="text" id="featureName" placeholder="Name" class="form-control mb-2">
+    <textarea id="featureDescription" placeholder="Description" class="form-control mb-2"></textarea>
+    <button onclick="submitFeature()" class="btn btn-primary">Save</button>
+    <button onclick="cancelFeature()" class="btn btn-secondary">Cancel</button>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
 <script src="js/openLayersFunctions.js"></script>
 <script src="js/constants.js"></script>
 <script>
-    var map; // Global variable for the map    
-    initialiseMap(centralItaly);
+    var map = initialiseMap(centralItaly);
 </script>
 <script type="module" src="js/drawingFunctions.js"></script>
 

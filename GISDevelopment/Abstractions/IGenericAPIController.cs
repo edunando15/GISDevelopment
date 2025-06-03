@@ -21,6 +21,24 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
     }
     
     /// <summary>
+    /// Method used to get all entities from the database.
+    /// </summary>
+    /// <returns> All DTOs representing the entities in the database. </returns>
+    [HttpGet("GetAll")]
+    public virtual IActionResult GetAll()
+    {
+        try
+        {
+            var dtos = _service.GetAll().ToList();
+            return Ok(dtos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
+    
+    /// <summary>
     /// Method used to get the WKT representation of an entity.
     /// </summary>
     /// <param name="id"> The id of the entity. </param>
@@ -58,4 +76,43 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
             return StatusCode(500, "Server error: " + ex.Message);
         }
     }
+    
+    /// <summary>
+    /// Method used to update an entity in the database.
+    /// </summary>
+    /// <param name="dto"> DTO representing the entity. </param>
+    /// <returns> Bad Request if the entity is null, Internal Server Error
+    /// if some error occurred, Ok otherwise. </returns>
+    [HttpPut("Edit")]
+    public virtual IActionResult Edit([FromBody] D dto)
+    {
+        if (dto == null)
+        {
+            return BadRequest("DTO cannot be null.");
+        }
+
+        try
+        {
+            _service.Update(dto);
+            return Ok();
+        }catch (Exception ex)
+        {
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
+    
+    [HttpDelete("{id}")]
+    public virtual IActionResult Delete(long id)
+    {
+        try
+        {
+            _service.Delete(id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
+    
 }

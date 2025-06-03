@@ -1,5 +1,6 @@
 using GISDevelopment.Extensions;
 using NetTopologySuite.IO.Converters;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -11,6 +12,7 @@ builder.Services.AddAPIControllers();
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         options.SerializerSettings.Converters.Add(new GeometryConverter());
     });
 

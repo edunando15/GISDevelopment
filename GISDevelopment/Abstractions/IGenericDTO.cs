@@ -19,6 +19,12 @@ public interface IGenericDTO<T, TDTO>
         get;
         set;
     }
+    
+    Dictionary<string, string>? Tags
+    {
+        get;
+        set;
+    }
 
     /// <summary>
     /// Virtual property representing the id of the entity.

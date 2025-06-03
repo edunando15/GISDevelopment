@@ -51,6 +51,15 @@ public static class ServiceExtension
         services.AddScoped<IGenericService<UserPolygon, UserPolygonDTO>>(provider =>
             new UserPolygonService(provider.GetRequiredService<ItalyCentreContext>()));
         
+        services.AddScoped<IGenericService<PlanetOsmPoint, PlanetOsmPointDTO>>(provider =>
+            new PlanetOsmPointService(provider.GetRequiredService<ItalyCentreContext>()));
+        
+        services.AddScoped<IGenericService<PlanetOsmLine, PlanetOsmLineDTO>>(provider =>
+            new PlanetOsmLineService(provider.GetRequiredService<ItalyCentreContext>()));
+        
+        services.AddScoped<IGenericService<PlanetOsmPolygon, PlanetOsmPolygonDTO>>(provider =>
+            new PlanetOsmPolygonService(provider.GetRequiredService<ItalyCentreContext>()));
+        
         return services;
     }
     
@@ -85,6 +94,15 @@ public static class ServiceExtension
                 provider.GetRequiredService<IGenericService<PlaceOfWorship, PlaceOfWorshipDTO>>(),
                 provider.GetRequiredService<ItalyCentreContext>()
             ));
+        
+        services.AddScoped<Controllers.MapController>(provider =>
+            new Controllers.MapController(
+                provider.GetRequiredService<ItalyCentreContext>(),
+                provider.GetRequiredService<IGenericService<Monument, MonumentDTO>>(),
+                provider.GetRequiredService<IGenericService<Restaurant, RestaurantDTO>>(),
+                provider.GetRequiredService<IGenericService<Shop, ShopDTO>>(),
+                provider.GetRequiredService<IGenericService<PlaceOfWorship, PlaceOfWorshipDTO>>()
+            ));
         return services;
     }
 
@@ -114,6 +132,14 @@ public static class ServiceExtension
         services.AddScoped<UserPolygonController>(provider =>
             new UserPolygonController(provider.GetRequiredService<IGenericService<UserPolygon, UserPolygonDTO>>()));
         
+        services.AddScoped<PlanetOsmPointController>(provider =>
+            new PlanetOsmPointController(provider.GetRequiredService<IGenericService<PlanetOsmPoint, PlanetOsmPointDTO>>()));
+        
+        services.AddScoped<PlanetOsmLineController>(provider =>
+            new PlanetOsmLineController(provider.GetRequiredService<IGenericService<PlanetOsmLine, PlanetOsmLineDTO>>()));
+        
+        services.AddScoped<PlanetOsmPolygonController>(provider =>
+            new PlanetOsmPolygonController(provider.GetRequiredService<IGenericService<PlanetOsmPolygon, PlanetOsmPolygonDTO>>()));
         return services;
     }
 }

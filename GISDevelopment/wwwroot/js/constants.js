@@ -19,5 +19,9 @@ const entityTypes = {
 const apiControllers = {
     Point: constantPath + 'UserPoint/',
     Line: constantPath + 'UserLine/',
-    Polygon: constantPath + 'UserPolygon/'
+    Polygon: constantPath + 'UserPolygon/',
+    Restaurant: constantPath + 'Restaurant/',
+    Monument: constantPath + 'Monument/',
+    PlaceOfWorship: constantPath + 'PlaceOfWorship/',
+    Shop: constantPath + 'Shop/',
 }

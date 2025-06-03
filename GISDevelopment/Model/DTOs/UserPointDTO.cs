@@ -6,6 +6,7 @@ namespace GISDevelopment.Models.DTOs;
 public class UserPointDTO: IGenericDTO<UserPoint, UserPointDTO>
 {
     public Geometry Geometry { get; set; }
+    public Dictionary<string, string>? Tags { get; set; }
     public long? Id { get; set; }
     public string? Name { get; set; }
     public UserPoint ToEntity()

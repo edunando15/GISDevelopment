@@ -2,7 +2,7 @@
 
 // Function used to initialise the map with a given center point.
 function initialiseMap(center) {
-    map = new Map({
+    return new Map({
         target: 'map',
         layers: [
             new layer.Tile({
@@ -80,5 +80,34 @@ async function loadPoint(controller, id) {
     map.addLayer(vectorLayer);
     // Zoom to the point.
     const geometry = feature.getGeometry();
-    map.getView().fit(geometry, { padding: [50, 50, 50, 50], maxZoom: 8 });
+    map.getView().fit(geometry, {padding: [50, 50, 50, 50], maxZoom: 8});
+}
+function detectUserController(type) {
+    let api = '';
+    switch (type) {
+        case 'Point':
+            api = apiControllers.Point;
+            break;
+        case 'LineString':
+            api = apiControllers.Line;
+            break;
+        case 'Polygon':
+            api = apiControllers.Polygon;
+            break;
+        case 'Restaurant':
+            api = apiControllers.Restaurant;
+            break;
+        case 'Monument':
+            api = apiControllers.Monument;
+            break;
+        case 'PlaceOfWorship':
+            api = apiControllers.PlaceOfWorship;
+            break;
+        case 'Shop':
+            api = apiControllers.Shop;
+            break;
+        default:
+            throw new Error('Unsupported geometry type: ' + type);
+    }
+    return api;
 }

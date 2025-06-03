@@ -6,6 +6,7 @@ namespace GISDevelopment.Models.DTOs;
 public class UserLineDTO: IGenericDTO<UserLine, UserLineDTO>
 {
     public Geometry Geometry { get; set; }
+    public Dictionary<string, string>? Tags { get; set; }
     public long? Id { get; set; }
     public string? Name { get; set; }
     public UserLine ToEntity()

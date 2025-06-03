@@ -62,15 +62,48 @@ function addInteraction() {
 
         draw.on('drawend', function (event) {
             const selectedFeature = event.feature;
+            const popup = document.getElementById("popupForm");
+            popup.style.display = "block";
+            popup.style.top = "100px";
+            popup.style.left = "50px";
             drawnFeatures.push(selectedFeature);
             const geometryType = selectedFeature.getGeometry().getType();
             let endpoint = '';
-            if (geometryType === 'Point') endpoint = apiControllers.Point + 'Add';
-            else if (geometryType === 'LineString') endpoint = apiControllers.Line + 'Add';
-            else if (geometryType === 'Polygon') endpoint = apiControllers.Polygon + 'Add';
+            endpoint = detectUserController(geometryType) + 'Add';
             sendFeatureToController(selectedFeature, endpoint);
         });
     }
+}
+
+// Function to detect the controller based on the geometry type and operation.
+function detectUserController(type) {
+    let api = '';
+    switch (type) {
+        case 'Point':
+            api = apiControllers.Point;
+            break;
+        case 'LineString':
+            api = apiControllers.Line;
+            break;
+        case 'Polygon':
+            api = apiControllers.Polygon;
+            break;
+        case 'Restaurant':
+            api = apiControllers.Restaurant;
+            break;
+        case 'Monument':
+            api = apiControllers.Monument;
+            break;
+        case 'PlaceOfWorship':
+            api = apiControllers.PlaceOfWorship;
+            break;
+        case 'Shop':
+            api = apiControllers.Shop;
+            break;
+        default:
+            throw new Error('Unsupported geometry type: ' + type);
+    }
+    return api;
 }
 
 typeSelect.onchange = function () {
@@ -90,3 +123,75 @@ document.getElementById('undo').addEventListener('click', () => {
         draw.removeLastPoint();
     }
 })
+
+function submitFeature(controller) {
+    const name = document.getElementById("featureName").value;
+    const description = document.getElementById("featureDescription").value;
+    const wkt = new format.WKT().writeFeature(selectedFeature);
+    const type = selectedFeature.getGeometry().getType();
+    let endpoint = detectUserController(type) + 'Edit/';
+    fetch(controller, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, wkt })
+    })
+        .then(() => {
+            alert('Feature sent successfully!');
+            document.getElementById('popupForm').style.display = 'none';
+        });
+}
+
+function cancelFeature() {
+    sourceVector.removeFeature(drawnFeatures.pop());
+    document.getElementById('popupForm').style.display = 'none';    
+}
+
+function loadAllEntities() {
+    const endpoints = [
+        { url: apiControllers.Point + 'GetAll', type: 'Point' },
+        { url: apiControllers.Line + 'GetALl', type: 'LineString' },
+        { url: apiControllers.Polygon + 'GetAll', type: 'Polygon' }
+    ];
+
+    endpoints.forEach(endpoint => {
+        fetch(endpoint.url)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(entity => {
+                    let feature = new ol.format.WKT().readFeature(entity.wkt);
+                    feature.setId(entity.id);
+                    feature.setProperties({
+                        name: entity.name,
+                        description: entity.description,
+                        entityType: endpoint.type
+                    });
+                    vectorSource.addFeature(feature);
+                });
+            });
+    });
+}
+
+function updateFeature(feature) {
+    const name = prompt("Edit name:", feature.get("name"));
+    const description = prompt("Edit description:", feature.get("description"));
+    const wkt = new format.WKT().writeFeature(feature);
+    const id = feature.getId();
+    const type = feature.get("entityType");
+
+    let apiUrl = detectUserController(type) + 'Edit/' + id;
+
+    fetch(apiUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, wkt })
+    });
+}
+
+function deleteFeature(feature) {
+    const id = feature.getId();
+    const type = feature.get("entityType");
+    let apiUrl = detectUserController(type) + 'Delete/' + id;
+
+    fetch(apiUrl, { method: 'DELETE' })
+        .then(() => vectorSource.removeFeature(feature));
+}
