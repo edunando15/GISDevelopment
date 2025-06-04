@@ -31,11 +31,14 @@ async function loadPointsOfInterest(type) {
             }
         });
 
-        const vectorLayer = new layer.Vector({
+        if(window.poiLayer) {
+            map.removeLayer(window.poiLayer);
+        }
+        window.poiLayer = new layer.Vector({
             source: vectorSource
         });
 
-        map.addLayer(vectorLayer);
+        map.addLayer(window.poiLayer);
     } catch (error) {
         console.error(error);
         alert('Error loading points of interest');
@@ -45,8 +48,28 @@ async function loadPointsOfInterest(type) {
 function removePointsOfInterest() {
     const layers = map.getLayers().getArray();
     layers.forEach(layer => {
-        if (layer instanceof ol.layer.Vector) {
+        if (layer instanceof ol.layer.Vector && layer) {
             layer.getSource().clear();
         }
     });
+
+    const popupElement = document.getElementById('popup');
+    const popupContent = document.getElementById('popup-content');
+    
+    if (popupContent) {
+        popupContent.innerHTML = '';
+    }
+    
+    if (popupElement) {
+        popupElement.style.display = 'none';
+    }
+
+    if (window.popupOverlay) {
+        popupOverlay.setPosition(undefined);
+    }
+    
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+        sidebar.innerHTML = '';
+    }
 }

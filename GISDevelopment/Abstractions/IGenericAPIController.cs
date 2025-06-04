@@ -50,7 +50,13 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
         var wktWriter = new WKTWriter();
         string wkt = string.Empty;
         if(dto != null) wkt = wktWriter.Write(dto.Geometry);
-        return Ok(wkt);
+        var result = new
+        {
+            Id = dto?.Id,
+            Name = dto?.Name,
+            Geometry = wkt
+        };
+        return Ok(result);
     }
     
     /// <summary>

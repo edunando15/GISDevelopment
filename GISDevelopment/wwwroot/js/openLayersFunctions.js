@@ -53,12 +53,14 @@ async function loadPoint(controller, id) {
         console.error("Failed to load point with id " + id + ".");
         return;
     }
-    const wkt = await response.text();
+    const data = await response.json();
     const wktFormat = new format.WKT();
-    const feature = wktFormat.readFeature(wkt, {
+    const feature = wktFormat.readFeature(data.geometry, {
         dataProjection: 'EPSG:3857',
         featureProjection: 'EPSG:3857'
     });
+    feature.set('name', data.name);
+    
     const vectorSource = new source.Vector({
         features: [feature]
     });
