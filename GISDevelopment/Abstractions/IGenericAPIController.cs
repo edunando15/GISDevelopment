@@ -107,7 +107,7 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
         }
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete/{id}")]
     public virtual IActionResult Delete(long id)
     {
         try

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Feature Editor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <style>
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+
+        .popup, .edit-popup {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <div id="map"></div>
+
+    <div class="controls position-absolute top-0 start-0 m-3 bg-light p-3 border rounded">
+        <div class="mb-2">
+            <label for="drawType" class="form-label">Select Type</label>
+            <select id="drawType" class="form-select">
+                <option value="None">Select Type</option>
+                <option value="Point">Point</option>
+                <option value="LineString">Line</option>
+                <option value="Polygon">Polygon</option>
+            </select>
+        </div>
+        <button id="undoBtn" class="btn btn-danger">Undo</button>
+    </div>
+
+    <div id="popup" class="popup position-absolute bg-light p-3 border rounded">
+        <div class="mb-2">
+            <label for="featureName" class="form-label">Feature Name</label>
+            <input type="text" id="featureName" class="form-control" placeholder="Enter name" />
+        </div>
+        <button onclick="saveFeature()" class="btn btn-primary">Save</button>
+        <button onclick="cancelFeature()" class="btn btn-secondary">Cancel</button>
+    </div>
+
+    <div id="editPopup" class="edit-popup position-absolute bg-light p-3 border rounded">
+        <div class="mb-2">
+            <label for="editFeatureName" class="form-label">Edit Feature Name</label>
+            <input type="text" id="editFeatureName" class="form-control" />
+        </div>
+        <button onclick="updateFeature()" class="btn btn-primary">Update</button>
+        <button onclick="closeEdit()" class="btn btn-secondary">Close</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const { Map, View, proj, format, layer, source, style, interaction, Overlay } = ol;
+    const constantPath = '/api/';
+    const apiControllers = {
+        Point: constantPath + 'UserPoint/',
+        Line: constantPath + 'UserLine/',
+        Polygon: constantPath + 'UserPolygon/',
+        Restaurant: constantPath + 'Restaurant/',
+        Monument: constantPath + 'Monument/',
+        PlaceOfWorship: constantPath + 'PlaceOfWorship/',
+        Shop: constantPath + 'Shop/',
+    };
+
+    // ====== CONSTANTS ======
+    const API_ENDPOINTS = {
+        Point: 'API/UserPoint/',
+        LineString: 'API/UserLine/',
+        Polygon: 'API/UserPolygon/'
+    };
+
+    const geoJsonFormat = new format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const vectorSource = new source.Vector();
+        const vectorLayer = new layer.Vector({source: vectorSource});
+        let pointSource;
+        let lineSource;
+        let polygonSource;
+        const map = new Map({
+            target: 'map',
+            layers: [
+                new layer.Tile({
+                    source: new source.OSM()
+                }),
+                vectorLayer
+            ],
+            view: new View({
+                center: proj.fromLonLat([12.5, 42.5]),
+                zoom: 7
+            })
+        });
+
+        // ====== POPUP SETUP ======
+        const tooltipEl = document.createElement('div');
+        tooltipEl.className = 'tooltip';
+        tooltipEl.style.background = 'white';
+        tooltipEl.style.border = '1px solid black';
+        tooltipEl.style.padding = '4px';
+        tooltipEl.style.borderRadius = '4px';
+
+        const tooltipOverlay = new Overlay({
+            element: tooltipEl,
+            positioning: 'bottom-center',
+            offset: [0, -10],
+        });
+        map.addOverlay(tooltipOverlay);
+
+        // ====== GLOBAL STATE ======
+        let draw;
+        let currentFeature = null;
+        let lastDrawnFeature = null;
+        let selectedFeature = null;
+
+        // ====== FETCH ALL FEATURES AND ADD TO MAP ======
+        async function loadFeatures() {
+            var data = @Html.Raw(Json.Serialize(Model));
+            console.log(data);
+            const pointFeatures = data.points.map(point => {
+                const feature = new ol.Feature({
+                    geometry: new ol.geom.Point(proj.fromLonLat([point.geometry.coordinates.x, point.geometry.coordinates.y]))
+                });
+                feature.setId(String(point.id));
+                feature.set('name', point.name);
+                return feature;
+            });
+
+            pointSource = new source.Vector({
+                features: pointFeatures
+            });
+
+            const pointLayer = new layer.Vector({
+                source: pointSource,
+                style: new style.Style({
+                    image: new style.Circle({
+                        radius: 5,
+                        fill: new style.Fill({color: 'red'}),
+                        stroke: new style.Stroke({color: 'white', width: 1})
+                    })
+                })
+            });
+            map.addLayer(pointLayer);
+
+            const lineFeatures = data.lines.map(line => {
+                    const feature = new ol.Feature({
+                        geometry: new ol.geom.LineString(
+                            line.geometry.coordinates.map(coord => proj.fromLonLat([coord.x, coord.y]))
+                        )
+                    });
+                    feature.setId(String(line.id));
+                    feature.set('name', line.name);
+                    return feature;
+                }
+            );
+
+            lineSource = new source.Vector({
+                features: lineFeatures
+            });
+
+            const lineLayer = new layer.Vector({
+                source: lineSource,
+                style: new style.Style({
+                    stroke: new style.Stroke({
+                        color: 'blue',
+                        width: 2
+                    })
+                })
+            });
+            map.addLayer(lineLayer);
+
+            const polygonFeatures = data.polygons.map(polygon => {
+                    const feature = new ol.Feature({
+                        geometry: new ol.geom.Polygon([
+                            polygon.geometry.coordinates[0].map(coord =>
+                                proj.fromLonLat([coord.x, coord.y]))
+                        ])
+                    });
+                    feature.setId(String(polygon.id));
+                    feature.set('name', polygon.name);
+                    return feature;
+                }
+            );
+
+            polygonSource = new source.Vector({
+                features: polygonFeatures
+            });
+
+            const polygonLayer = new layer.Vector({
+                source: polygonSource,
+                style: new style.Style({
+                    stroke: new style.Stroke({
+                        color: 'green',
+                        width: 2
+                    }),
+                    fill: new style.Fill({
+                        color: 'rgba(0, 255, 0, 0.3)'
+                    })
+                })
+            });
+            map.addLayer(polygonLayer);
+            map.addInteraction(new interaction.Modify({source: pointSource}));
+            map.addInteraction(new interaction.Modify({source: lineSource}));
+            map.addInteraction(new interaction.Modify({source: polygonSource}));
+        }
+
+        loadFeatures();
+
+        // ====== INTERACTIONS ======
+        function addDrawInteraction(type) {
+            if (type === 'None') return;
+            draw = new interaction.Draw({
+                source: vectorSource,
+                type: type
+            });
+            draw.on('drawend', function (evt) {
+                currentFeature = evt.feature;
+                lastDrawnFeature = evt.feature;
+                map.un('click', mapClickHandler);
+                setTimeout(() => {
+                    map.on('click', mapClickHandler);
+                }, 300);
+                openPopup();
+            });
+            map.addInteraction(draw);
+        }
+
+        function removeDrawInteraction() {
+            if (draw) map.removeInteraction(draw);
+        }
+
+        document.getElementById('drawType').addEventListener('change', function () {
+            removeDrawInteraction();
+            addDrawInteraction(this.value);
+        });
+
+        document.getElementById('undoBtn').addEventListener('click', () => {
+            if (lastDrawnFeature) {
+                vectorSource.removeFeature(lastDrawnFeature);
+                lastDrawnFeature = null;
+            }
+        });
+
+        // ====== DRAW POPUP LOGIC ======
+        window.openPopup = function () {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'block';
+            popup.style.left = '50%';
+            popup.style.top = '100px';
+            document.getElementById('featureName').focus();
+        };
+
+        window.saveFeature = function () {
+            const name = document.getElementById('featureName').value;
+            if (!currentFeature || !name) return;
+
+            currentFeature.set('name', name);
+
+            const geometry = geoJsonFormat.writeGeometryObject(currentFeature.getGeometry());
+            const type = currentFeature.getGeometry().getType();
+            const endpoint = detectUserController(type) + 'Add';
+
+            const data = {
+                Name: name,
+                Geometry: geometry
+            };
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(res => res.ok ? res.text() : Promise.reject('Error')).then(console.log).catch(console.error);
+
+            vectorSource.removeFeature(currentFeature);
+            currentFeature = null;
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('featureName').value = '';
+        };
+
+        window.cancelFeature = function () {
+            if (currentFeature) vectorSource.removeFeature(currentFeature);
+            document.getElementById('popup').style.display = 'none';
+        };
+
+        // ====== RIGHT-CLICK DELETE ======
+        map.getViewport().addEventListener('contextmenu', function (evt) {
+            evt.preventDefault();
+            const pixel = map.getEventPixel(evt);
+            let feature = map.forEachFeatureAtPixel(pixel, f => f, {
+                hitTolerance: 5,
+                layerFilter: () => true // Allow all layers to be checked.
+            });
+            if (feature) {
+                console.log('Feature to delete: ', feature);
+                if (confirm('Delete this feature?')) {
+                    const subfeatures = feature.get('features');
+                    if (Array.isArray(subfeatures) && subfeatures.length === 1) {
+                        feature = subfeatures[0];
+                    }
+                    const id = feature.getId();
+                    let url = detectUserController(feature.getGeometry().getType()) + 'Delete/' + id;
+                    const sources = [pointSource, lineSource, polygonSource, vectorSource];
+                    const features = [];
+                    console.log('feature: ', feature);
+                    console.log('sources: ', sources);
+
+                    for (const src of sources) {
+                        if (!src) continue;
+                        const features = src.getFeatures(); // WORKS even with internal RTree
+                        const match = features.find(f => String(f.getId()) === String(id));
+                        if (match) {
+                            src.removeFeature(match);
+                            if (id) {
+                                fetch(url, {
+                                    method: 'DELETE',
+                                    headers: {'Content-Type': 'application/json'}
+                                }).then(res => res.ok ? res.text() : Promise.reject('Error'))
+                                    .then(console.log)
+                                    .catch(console.error);
+                            }
+                            break;
+                        }
+                    }
+                    vectorSource.removeFeature(feature);
+                }
+            }
+        });
+
+        // ====== CLICK TO EDIT ======
+        map.on('click', mapClickHandler);
+
+        function detectUserController(type) {
+            let api = '';
+            switch (type) {
+                case 'Point':
+                    api = apiControllers.Point;
+                    break;
+                case 'LineString':
+                    api = apiControllers.Line;
+                    break;
+                case 'Polygon':
+                    api = apiControllers.Polygon;
+                    break;
+                case 'Restaurant':
+                    api = apiControllers.Restaurant;
+                    break;
+                case 'Monument':
+                    api = apiControllers.Monument;
+                    break;
+                case 'PlaceOfWorship':
+                    api = apiControllers.PlaceOfWorship;
+                    break;
+                case 'Shop':
+                    api = apiControllers.Shop;
+                    break;
+                default:
+                    throw new Error('Unsupported geometry type: ' + type);
+            }
+            return api;
+        }
+
+        function mapClickHandler(evt) {
+            let feature = map.forEachFeatureAtPixel(evt.pixel, function (f) {
+                const geometry = f.getGeometry();
+                const type = geometry.getType();
+                if (type === 'LineString' || type === 'Polygon' || type === 'Point') {
+                    return f;
+                }
+                return null;
+            }, {
+                hitTolerance: 15,
+                layerFilter: function (layerCandidate) {
+                    // Exclude the vectorLayer used for drawing temporary features
+                    return layerCandidate !== vectorLayer;
+                }
+            });
+
+            if (feature) {
+                selectedFeature = feature;
+                const geometry = feature.getGeometry();
+                const name = feature.get('name') || '';
+                console.log('Selected feature type:', geometry.getType());
+
+                // Show tooltip and popup
+                tooltipEl.innerHTML = name;
+                tooltipOverlay.setPosition(evt.coordinate);
+
+                const editPopup = document.getElementById('editPopup');
+                document.getElementById('editFeatureName').value = name;
+                editPopup.style.display = 'block';
+                editPopup.style.left = evt.pixel[0] + 'px';
+                editPopup.style.top = evt.pixel[1] + 'px';
+            } else {
+                tooltipOverlay.setPosition(undefined);
+                document.getElementById('editPopup').style.display = 'none';
+            }
+        }
+
+        window.updateFeature = function () {
+            if (!selectedFeature) return;
+
+            const newName = document.getElementById('editFeatureName').value;
+            if (!newName) return;
+
+            selectedFeature.set('name', newName);
+
+            const geometry = geoJsonFormat.writeGeometryObject(selectedFeature.getGeometry());
+            const type = selectedFeature.getGeometry().getType();
+            const id = selectedFeature.getId();
+            const endpoint = detectUserController(type) + 'Edit/';
+
+            const data = {
+                Id: id,
+                Name: newName,
+                Geometry: geometry
+            };
+
+            fetch(endpoint, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+                .then(res => res.ok ? res.text() : Promise.reject('Error updating'))
+                .then(console.log)
+                .catch(console.error);
+
+            document.getElementById('editPopup').style.display = 'none';
+        };
+        window.closeEdit = function () {
+            document.getElementById('editPopup').style.display = 'none';
+        };
+    });
+</script>
+</body>
+</html>

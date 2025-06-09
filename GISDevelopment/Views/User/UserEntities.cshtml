@@ -1,0 +1,188 @@
+@model dynamic
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@latest/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+    #map {
+        height: 600px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    #popupForm {
+        position: absolute;
+        z-index: 9999;
+        width: 300px;
+        background-color: white;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+</head>
+<body>
+<div id="popupForm" class="card" style="display:none;">
+    <div class="card-body">
+        <h5 class="card-title">Add Feature Info</h5>
+        <div class="mb-3">
+            <label for="featureName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="featureName" />
+        </div>
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-primary" onclick="submitFeature()">Save</button>
+            <button class="btn btn-secondary" onclick="cancelFeature()">Cancel</button>
+        </div>
+    </div>
+</div>
+<div id="editPopupForm" class="card" style="display:none; position:absolute; z-index:9999; width:300px;">
+    <div class="card-body">
+        <h5 class="card-title">Edit Feature</h5>
+        <div class="mb-3">
+            <label for="editFeatureName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="editFeatureName" />
+        </div>
+        <div class="mb-3">
+            <label for="editFeatureDescription" class="form-label">Description</label>
+            <input type="text" class="form-control" id="editFeatureDescription" />
+        </div>
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-success" id="saveEdit">Save</button>
+            <button class="btn btn-danger" id="deleteFeature">Delete</button>
+        </div>
+    </div>
+</div>
+
+<div id="map"></div>
+<div class="mt-3 mb-5">
+    <div class="input-group w-50 mx-auto">
+        <label class="input-group-text" for="type">Geometry type:</label>
+        <select class="form-select" id="type">
+            <option value="None">None</option>
+            <option value="Point">Point</option>
+            <option value="LineString">LineString</option>
+            <option value="Polygon">Polygon</option>
+        </select>
+        <button class="btn btn-outline-secondary" id="undo">Undo</button>
+    </div>
+</div>
+
+<script src="js/openLayersFunctions.js"></script>
+<script src="js/userDrawing.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/mapViewer.js"></script>
+<script src="js/drawingFunctions.js"></script>
+<script>
+    document.getElementById('saveEdit').addEventListener('click', function () {
+        const name = document.getElementById('editFeatureName').value;
+        const description = document.getElementById('editFeatureDescription').value;
+
+        window.clickedFeature.set('name', name);
+        window.clickedFeature.set('description', description);
+
+        updateFeature(window.clickedFeature); // This calls your controller
+
+        document.getElementById('editPopupForm').style.display = 'none';
+    });
+
+    document.getElementById('deleteFeature').addEventListener('click', function () {
+        const type = window.clickedFeature.get('entityType');
+        const controller = detectUserController(type);
+
+        deleteFeatureFromController(window.clickedFeature, controller); // Backend delete
+        sourceVector.removeFeature(window.clickedFeature); // Remove from map
+
+        document.getElementById('editPopupForm').style.display = 'none';
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        window.map = initialiseMap(centralItaly);
+
+        var data = @Html.Raw(Json.Serialize(Model));
+        console.log(data);
+        const pointFeatures = data.points.map(point => {
+            const feature = new ol.Feature({
+                geometry: new ol.geom.Point(proj.fromLonLat([point.geometry.coordinates.x, point.geometry.coordinates.y]))
+            });
+            feature.setId(point.id);
+            feature.set('name', point.name);
+            return feature;
+        });
+
+        const pointLayer = new layer.Vector({
+            source: new source.Vector({
+                features: pointFeatures
+            }),
+            style: new style.Style({
+                image: new style.Circle({
+                    radius: 5,
+                    fill: new style.Fill({ color: 'red' }),
+                    stroke: new style.Stroke({ color: 'white', width: 1 })
+                })
+            })
+        });
+        window.map.addLayer(pointLayer);
+
+        const lineFeatures = data.lines.map(line => {
+                const feature = new ol.Feature({
+                    geometry: new ol.geom.LineString(
+                        line.geometry.coordinates.map(coord => proj.fromLonLat([coord.x, coord.y]))
+                    )
+                });
+                feature.setId(line.id);
+                feature.set('name', line.name);
+                return feature;
+            }
+        );
+        const lineLayer = new layer.Vector({
+            source: new source.Vector({
+                features: lineFeatures
+            }),
+            style: new style.Style({
+                stroke: new style.Stroke({
+                    color: 'blue',
+                    width: 2
+                })
+            })
+        });
+        window.map.addLayer(lineLayer);
+
+        const polygonFeatures = data.polygons.map(polygon => {
+                const feature = new ol.Feature({
+                    geometry: new ol.geom.Polygon([
+                        polygon.geometry.coordinates[0].map(coord =>
+                            proj.fromLonLat([coord.x, coord.y]))
+                    ])
+                });
+                feature.setId(polygon.id);
+                feature.set('name', polygon.name);
+                return feature;
+            }
+        );
+        const polygonLayer = new layer.Vector({
+            source: new source.Vector({
+                features: polygonFeatures
+            }),
+            style: new style.Style({
+                stroke: new style.Stroke({
+                    color: 'green',
+                    width: 2
+                }),
+                fill: new style.Fill({
+                    color: 'rgba(0, 255, 0, 0.3)'
+                })
+            })
+        });
+        window.map.addLayer(polygonLayer);
+        setupDrawing(window.map);
+    });
+</script>
+</body>
+</html>
