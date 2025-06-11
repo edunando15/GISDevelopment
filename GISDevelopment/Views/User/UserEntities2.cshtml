@@ -141,13 +141,23 @@
 
             const pointLayer = new layer.Vector({
                 source: pointSource,
-                style: new style.Style({
-                    image: new style.Circle({
-                        radius: 5,
-                        fill: new style.Fill({color: 'red'}),
-                        stroke: new style.Stroke({color: 'white', width: 1})
-                    })
-                })
+                style: function (feature) {
+                    return new style.Style({
+                        image: new style.Circle({
+                            radius: 5,
+                            fill: new style.Fill({color: 'red'}),
+                            stroke: new style.Stroke({color: 'white', width: 1})
+                        }),
+                        text: new style.Text({
+                            text: feature.get('name') || '',
+                            offsetY: -15,
+                            font: '14px sans-serif',
+                            fill: new style.Fill({color: '#000'}),
+                            stroke: new style.Stroke({color: '#fff', width: 2})
+                        })
+                    });
+                }
+
             });
             map.addLayer(pointLayer);
 
@@ -169,12 +179,22 @@
 
             const lineLayer = new layer.Vector({
                 source: lineSource,
-                style: new style.Style({
-                    stroke: new style.Stroke({
-                        color: 'blue',
-                        width: 2
-                    })
-                })
+                style: function (feature) {
+                    return new style.Style({
+                        stroke: new style.Stroke({
+                            color: 'blue',
+                            width: 2
+                        }),
+                        text: new style.Text({
+                            text: feature.get('name') || '',
+                            offsetY: -15,
+                            font: '14px sans-serif',
+                            fill: new style.Fill({color: '#000'}),
+                            stroke: new style.Stroke({color: '#fff', width: 2})
+                        })
+                    });
+                }
+
             });
             map.addLayer(lineLayer);
 
@@ -197,15 +217,25 @@
 
             const polygonLayer = new layer.Vector({
                 source: polygonSource,
-                style: new style.Style({
-                    stroke: new style.Stroke({
-                        color: 'green',
-                        width: 2
-                    }),
-                    fill: new style.Fill({
-                        color: 'rgba(0, 255, 0, 0.3)'
-                    })
-                })
+                style: function (feature) {
+                    return new style.Style({
+                        stroke: new style.Stroke({
+                            color: 'green',
+                            width: 2
+                        }),
+                        fill: new style.Fill({
+                            color: 'rgba(0, 255, 0, 0.3)'
+                        }),
+                        text: new style.Text({
+                            text: feature.get('name') || '',
+                            offsetY: -15,
+                            font: '14px sans-serif',
+                            fill: new style.Fill({color: '#000'}),
+                            stroke: new style.Stroke({color: '#fff', width: 2})
+                        })
+                    });
+                }
+
             });
             map.addLayer(polygonLayer);
             map.addInteraction(new interaction.Modify({source: pointSource}));
@@ -338,6 +368,19 @@
         // ====== CLICK TO EDIT ======
         map.on('click', mapClickHandler);
 
+        map.on('pointermove', mapHoverHandler);
+
+        function mapHoverHandler(evt) {
+            const feature = map.forEachFeatureAtPixel(evt.pixel, f => f);
+            if (feature) {
+                tooltipEl.innerHTML = feature.get('name') || '';
+                tooltipOverlay.setPosition(evt.coordinate);
+            } else {
+                tooltipOverlay.setPosition(undefined);
+            }
+        }
+
+
         function detectUserController(type) {
             let api = '';
             switch (type) {
@@ -412,6 +455,7 @@
             if (!newName) return;
 
             selectedFeature.set('name', newName);
+            selectedFeature.changed();
 
             const geometry = geoJsonFormat.writeGeometryObject(selectedFeature.getGeometry());
             const type = selectedFeature.getGeometry().getType();

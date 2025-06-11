@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GISDevelopment.Abstractions;
 
 public class IGenericController<T, D> : Controller
-    where T : class
+    where T : class, IHasTags
     where D : IGenericDTO<T, D>
 {
     protected readonly IGenericService<T, D> _service;

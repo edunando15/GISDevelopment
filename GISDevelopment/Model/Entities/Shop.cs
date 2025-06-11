@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using GISDevelopment.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
-public partial class Shop
+public partial class Shop: IHasTags
 {
     [Key]
     public long? OsmId { get; set; }

@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore; 
 namespace GISDevelopment.Abstractions;
-
+ 
 public abstract class IGenericService<T, D> where T: class where D : IGenericDTO<T, D>
 {
     protected readonly DbContext _context;
@@ -81,6 +80,48 @@ public abstract class IGenericService<T, D> where T: class where D : IGenericDTO
     {
         totalCount = _context.Set<T>().Count();
         return GetAll().Skip(from).Take(num).ToList();
+    }
+    
+    public List<D> Search(string name, string rawQuery = "", int take = 100000, int skip = 0)
+    {
+        IEnumerable<T> entities;
+        if (!string.IsNullOrEmpty(rawQuery))
+        {
+            entities = _context.Set<T>().FromSqlRaw(rawQuery).ToList();
+            entities = entities.Where(e =>
+            {
+                var nameProperty = typeof(T).GetProperty("Name");
+                var n = nameProperty?.GetValue(e) as string;
+                return !string.IsNullOrEmpty(n) &&
+                       n != "Unnamed" &&
+                       (string.IsNullOrEmpty(name) || n.Contains(name));
+            });
+        }
+        else
+        {
+            var result = _context.Set<T>().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                result = result.Where(e => EF.Property<string>(e, "Name").Contains(name));
+            }
+            else
+            {
+                result = result.Where(e => EF.Property<string>(e, "Name") != null && EF.Property<string>(e, "Name") != string.Empty);
+            }
+
+            return result
+                .Skip(skip)
+                .Take(take)
+                .ToList()
+                .Select(e => D.FromEntity(e))
+                .ToList();
+        }
+        return entities
+            .Skip(skip)
+            .Take(take)
+            .ToList()
+            .Select(e => D.FromEntity(e))
+            .ToList();
     }
 
     /// <summary>

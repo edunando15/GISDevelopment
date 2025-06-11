@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using GISDevelopment.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
-public partial class PlanetOsmPoint
+public partial class PlanetOsmPoint: IHasTags
 {
     public long? OsmId { get; set; }
 

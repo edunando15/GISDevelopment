@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using GISDevelopment.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
-public partial class Monument
+public partial class Monument: IHasTags
 {
     [Key]
     public long? OsmId { get; set; }

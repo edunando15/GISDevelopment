@@ -8,6 +8,7 @@ namespace GISDevelopment.Abstractions;
 /// <typeparam name="T"> The real entity. </typeparam>
 /// <typeparam name="TDTO"> The DTO entity. </typeparam>
 public interface IGenericDTO<T, TDTO>
+    where T : class
     where TDTO : IGenericDTO<T, TDTO>
 {
     /// <summary>

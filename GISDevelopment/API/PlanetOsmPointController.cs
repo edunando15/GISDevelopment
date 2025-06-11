@@ -27,4 +27,41 @@ public class PlanetOsmPointController: IGenericAPIController<PlanetOsmPoint, Pla
     {
         return Ok();
     }
+    
+    [HttpGet][HttpPost("Search")]
+    public override IActionResult Search([FromQuery] string name = "", [FromBody]Dictionary<string, string>? tags = null)
+    {
+        try
+        {
+            string query = "";
+            if (tags != null)
+            {
+                if (tags.ContainsKey("Shop")) query = @"SELECT * FROM ""planet_osm_point"" WHERE shop is not null";
+                if (tags.ContainsKey("Restaurant")) query = @"SELECT * FROM ""planet_osm_point"" WHERE amenity IN ('restaurant')";
+                if (tags.ContainsKey("PlaceOfWorship")) query = @"SELECT * FROM ""planet_osm_point"" WHERE amenity IN ('crypt', 'monastery', 'place_of_worship', 'grave_yard', 'Mosque')";
+                if (tags.ContainsKey("Monument")) query = @"SELECT * FROM ""planet_osm_point"" WHERE historic IN ('archaeological_site', 'memorial', 'milestone', 'military', 'monument', 'obelisk', 'temple', 'tomb', 'ancient path', 'antica_fontana')";
+            }
+            var results = _service.Search(name, query);
+            var adaptedResults = results.Select(e => new
+            {
+                id = e.Id,
+                name = e.Name,
+                tags = e.Tags,
+                geometry = new
+                {
+                    type = "Point",
+                    coordinates = new[]
+                    {
+                        e.Geometry.Coordinate.X,
+                        e.Geometry.Coordinate.Y
+                    }
+                }
+            });
+            return Ok(adaptedResults);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
 }

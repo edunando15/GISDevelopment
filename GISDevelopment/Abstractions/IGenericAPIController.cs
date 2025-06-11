@@ -10,7 +10,7 @@ namespace GISDevelopment.Abstractions;
 /// <typeparam name="D"> Type of DTO entities. </typeparam>
 [ApiController]
 public abstract class IGenericAPIController<T, D> : ControllerBase
-    where T : class
+    where T : class, IHasTags
     where D : IGenericDTO<T, D>
 {
     protected readonly IGenericService<T, D> _service;
@@ -29,7 +29,7 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
     {
         try
         {
-            var dtos = _service.GetAll().ToList();
+            var dtos = _service.GetAll().Where(d => d.Name != "Unnamed" && !string.IsNullOrEmpty(d.Name)).ToList();
             return Ok(dtos);
         }
         catch (Exception ex)
@@ -114,6 +114,20 @@ public abstract class IGenericAPIController<T, D> : ControllerBase
         {
             _service.Delete(id);
             return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Server error: " + ex.Message);
+        }
+    }
+    
+    [HttpPost("Search")]
+    public virtual IActionResult Search([FromQuery] string name = "", [FromBody]Dictionary<string, string>? tags = null)
+    {
+        try
+        {
+            var results = _service.Search(name);
+            return Ok(results);
         }
         catch (Exception ex)
         {

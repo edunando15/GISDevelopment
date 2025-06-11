@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using GISDevelopment.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
-public partial class PlanetOsmLine
+public partial class PlanetOsmLine: IHasTags
 {
     public long? OsmId { get; set; }
 

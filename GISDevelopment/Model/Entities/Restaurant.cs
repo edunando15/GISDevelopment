@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GISDevelopment.Abstractions;
 using NetTopologySuite.Geometries;
 
 namespace GISDevelopment.Models;
 
-public partial class Restaurant
+public partial class Restaurant: IHasTags
 {
     [Key]
     public long? OsmId { get; set; }
