@@ -13,7 +13,7 @@
 
         .popup, .edit-popup {
             display: none;
-            position: absolute;
+            position: fixed;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
@@ -131,7 +131,9 @@
                     geometry: new ol.geom.Point(proj.fromLonLat([point.geometry.coordinates.x, point.geometry.coordinates.y]))
                 });
                 feature.setId(String(point.id));
+                feature.set('id', point.id);
                 feature.set('name', point.name);
+                console.log(feature.getId());
                 return feature;
             });
 
@@ -167,7 +169,8 @@
                             line.geometry.coordinates.map(coord => proj.fromLonLat([coord.x, coord.y]))
                         )
                     });
-                    feature.setId(String(line.id));
+                    feature.setId(line.id);
+                    feature.set('id', line.id);
                     feature.set('name', line.name);
                     return feature;
                 }
@@ -205,7 +208,8 @@
                                 proj.fromLonLat([coord.x, coord.y]))
                         ])
                     });
-                    feature.setId(String(polygon.id));
+                    feature.setId(polygon.id);
+                    feature.set('id', polygon.id);
                     feature.set('name', polygon.name);
                     return feature;
                 }
@@ -456,10 +460,11 @@
 
             selectedFeature.set('name', newName);
             selectedFeature.changed();
-
+            console.log('selected feature: ', selectedFeature);
             const geometry = geoJsonFormat.writeGeometryObject(selectedFeature.getGeometry());
             const type = selectedFeature.getGeometry().getType();
-            const id = selectedFeature.getId();
+            const id = selectedFeature.get('id');
+            
             const endpoint = detectUserController(type) + 'Edit/';
 
             const data = {
@@ -478,9 +483,11 @@
                 .catch(console.error);
 
             document.getElementById('editPopup').style.display = 'none';
+            selectedFeature = null;
         };
         window.closeEdit = function () {
             document.getElementById('editPopup').style.display = 'none';
+            selectedFeature = null;
         };
     });
 </script>

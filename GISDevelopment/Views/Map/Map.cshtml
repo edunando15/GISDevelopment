@@ -31,6 +31,8 @@
             <button id="load-poi" class="btn btn-primary me-2" onclick="loadPointsOfInterest(document.getElementById('poi-select').value)">Load Points</button>
             <button id="remove-poi" class="btn btn-danger me-2" onclick="removePointsOfInterest()">Remove Points</button>
             <button class="btn btn-success" onclick="enablePolygonDraw()">Draw Area</button>
+            <button class="btn btn-warning me-2" onclick="enableRadiusDetection()">Detect Nearby</button>
+            <input type="number" id="radiusInput" class="form-control ms-2" placeholder="Distance (m)" style="width: 150px;" min="10">
         </div>
     </div>
     <div class="row mb-4">
@@ -330,6 +332,48 @@
             }
         }
     }
+
+    function enableRadiusDetection() {
+        window.map.once('click', function (event) {
+            const radius = parseFloat(document.getElementById('radiusInput').value);
+            if (isNaN(radius) || radius <= 0) {
+                alert("Please enter a valid distance in meters.");
+                return;
+            }
+
+            const center = event.coordinate;
+            const sourceProj = window.map.getView().getProjection();
+
+            const circleGeom = ol.geom.Polygon.fromCircle(
+                new ol.geom.Circle(center, radius),
+                64
+            );
+
+            const features = window.poiLayer.getSource().getFeatures().filter(f => {
+                return circleGeom.intersectsCoordinate(f.getGeometry().getClosestPoint(center));
+            });
+
+            const vectorLayer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: [new ol.Feature(circleGeom)]
+                }),
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({ color: 'purple', width: 2 }),
+                    fill: new ol.style.Fill({ color: 'rgba(128,0,128,0.1)' })
+                })
+            });
+
+            window.map.addLayer(vectorLayer);
+            window.setTimeout(() => window.map.removeLayer(vectorLayer), 3000); // Auto-remove
+
+            highlightFeatures(features);
+            zoomToSelectedArea(features);
+            buildSidebarList(features);
+        });
+
+        alert("Click on the map to choose the center point.");
+    }
+
 </script>
 </body>
 </html>
